@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label "jenkins-php"
+        label "jenkins-nodejs"
     }
     environment {
       ORG               = 'hgajjar'
@@ -13,7 +13,7 @@ pipeline {
           branch 'master'
         }
         steps {
-          container('php') {
+          container('nodejs') {
             // ensure we're not on a detached head
             sh "git checkout master"
             // until we switch to the new kubernetes / jenkins credential implementation use git credentials store
@@ -22,12 +22,12 @@ pipeline {
             sh "echo \$(jx-release-version) > VERSION"
           }
           dir ('./charts/drupal') {
-            container('php') {
+            container('nodejs') {
               sh "jx step git credentials"
               sh "make tag"
             }
           }
-          container('php') {
+          container('nodejs') {
             sh "docker build -t \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:\$(cat VERSION) ."
             sh "docker push \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:\$(cat VERSION)"
           }
@@ -39,7 +39,7 @@ pipeline {
         }
         steps {
           dir ('./charts/drupal') {
-            container('php') {
+            container('nodejs') {
               sh 'jx step changelog --version v\$(cat ../../VERSION)'
 
               // release the helm chart
