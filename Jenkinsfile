@@ -21,7 +21,7 @@ pipeline {
           container('nodejs') {
             // sh "npm install"
             // sh "CI=true DISPLAY=:99 npm test"
-
+            sh 'ls -al'
             sh 'export VERSION=$PREVIEW_VERSION && skaffold run -f skaffold.yaml'
 
             sh "jx step validate --min-jx-version 1.2.36"
@@ -80,9 +80,9 @@ pipeline {
         }
       }
     }
-    post {
-        always {
-            cleanWs()
-        }
-    }
+    // post {
+    //     always {
+    //         cleanWs()
+    //     }
+    // }
   }
