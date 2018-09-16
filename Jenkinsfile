@@ -19,13 +19,13 @@ pipeline {
         }
         steps {
           container('nodejs') {
-            // sh "npm install"
-            // sh "CI=true DISPLAY=:99 npm test"
-            sh 'sleep infinity'
-            sh 'export VERSION=$PREVIEW_VERSION && skaffold run -f skaffold.yaml'
+            //sh "npm install"
+            //sh "CI=true DISPLAY=:99 npm test"
 
-            sh "jx step validate --min-jx-version 1.2.36"
-            sh "jx step post build --image \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:$PREVIEW_VERSION"
+            sh 'export VERSION=$PREVIEW_VERSION && skaffold build -f skaffold.yaml'
+
+
+            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:$PREVIEW_VERSION"
           }
 
           dir ('./charts/preview') {
@@ -44,20 +44,24 @@ pipeline {
           container('nodejs') {
             // ensure we're not on a detached head
             sh "git checkout master"
-            // until we switch to the new kubernetes / jenkins credential implementation use git credentials store
             sh "git config --global credential.helper store"
+
+            sh "jx step git credentials"
             // so we can retrieve the version in later steps
             sh "echo \$(jx-release-version) > VERSION"
           }
           dir ('./charts/drupal') {
             container('nodejs') {
-              sh "jx step git credentials"
               sh "make tag"
             }
           }
           container('nodejs') {
-            sh "docker build -t \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:\$(cat VERSION) ."
-            sh "docker push \$JENKINS_X_DOCKER_REGISTRY_SERVICE_HOST:\$JENKINS_X_DOCKER_REGISTRY_SERVICE_PORT/$ORG/$APP_NAME:\$(cat VERSION)"
+            //sh "npm install"
+            //sh "CI=true DISPLAY=:99 npm test"
+
+            sh 'export VERSION=`cat VERSION` && skaffold build -f skaffold.yaml'
+
+            sh "jx step post build --image $DOCKER_REGISTRY/$ORG/$APP_NAME:\$(cat VERSION)"
           }
         }
       }
@@ -71,7 +75,7 @@ pipeline {
               sh 'jx step changelog --version v\$(cat ../../VERSION)'
 
               // release the helm chart
-              sh 'make release'
+              sh 'jx step helm release'
 
               // promote through all 'Auto' promotion Environments
               sh 'jx promote -b --all-auto --timeout 1h --version \$(cat ../../VERSION)'
