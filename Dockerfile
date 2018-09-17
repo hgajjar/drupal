@@ -17,3 +17,7 @@ EXPOSE 80
 
 WORKDIR /app
 COPY . .
+
+COPY docker/config/php/php.ini /usr/local/etc/php/conf.d/xxx-lando-default.ini
+COPY docker/config/php/httpd-ssl.conf /etc/apache2/sites-enabled/000-default.conf
+COPY docker/config/drupal8/php.ini /usr/local/etc/php/conf.d/zzz-lando-my-custom-ini-file-called-php.ini
