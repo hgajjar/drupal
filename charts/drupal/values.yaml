@@ -1,18 +1,39 @@
-# Default values for PHP.
+# Default values for drupal projects.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
-replicaCount: 2
+replicaCount: 1
 image:
+  repository: draft
+  tag: dev
   pullPolicy: IfNotPresent
 service:
   name: drupal
   type: ClusterIP
   externalPort: 80
   internalPort: 80
+  annotations:
+    fabric8.io/expose: "true"
+    fabric8.io/ingress.annotations: "kubernetes.io/ingress.class: nginx"
 resources:
   limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 400m
+    memory: 256Mi
   requests:
-    cpu: 100m
+    cpu: 200m
     memory: 128Mi
+probePath: /
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+readinessProbe:
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
+terminationGracePeriodSeconds: 10
+
+mysql:
+  mysqlUser: drupal8
+  mysqlPassword: drupal8
+  mysqlDatabase: drupal8
