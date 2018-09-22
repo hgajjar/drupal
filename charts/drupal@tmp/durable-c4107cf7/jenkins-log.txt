@@ -1,0 +1,5 @@
++ make tag
+sed -i -e "s/version:.*/version: 8.6.2/" Chart.yaml
+sed -i -e "s|repository: .*|repository: 10.11.243.251:5000\/hgajjar\/drupal|" values.yaml
+sed -i -e "s/tag: .*/tag: 8.6.2/" values.yaml
+git add --all
