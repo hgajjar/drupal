@@ -23,4 +23,5 @@ COPY docker/config/php/httpd-ssl.conf /etc/apache2/sites-enabled/000-default.con
 COPY docker/config/drupal8/php.ini /usr/local/etc/php/conf.d/zzz-lando-my-custom-ini-file-called-php.ini
 
 RUN composer install \
-  && chown -R www-data:www-data .
+  && chown -R www-data:www-data . \
+  && a2enmod rewrite
