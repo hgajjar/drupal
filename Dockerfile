@@ -24,5 +24,3 @@ COPY docker/config/drupal8/php.ini /usr/local/etc/php/conf.d/zzz-lando-my-custom
 
 RUN composer install \
   && chown -R www-data:www-data .
-
-USER www-data
