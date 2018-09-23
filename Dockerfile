@@ -25,4 +25,5 @@ COPY docker/config/drupal8/php.ini /usr/local/etc/php/conf.d/zzz-lando-my-custom
 RUN composer install \
   && chown -R www-data:www-data .
 
-CMD ["a2enmod rewrite && apache2-foreground"]
+ENTRYPOINT [ "/lando-entrypoint.sh" ]
+CMD [ "docker-php-entrypoint", "sh", "-c", "a2enmod rewrite && apache2-foreground" ]

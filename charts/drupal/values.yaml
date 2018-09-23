@@ -32,8 +32,10 @@ readinessProbe:
   successThreshold: 1
   timeoutSeconds: 1
 terminationGracePeriodSeconds: 10
+nameOverride: app
 
 mysql:
   mysqlUser: drupal8
   mysqlPassword: drupal8
   mysqlDatabase: drupal8
+  fullnameOverride: database
