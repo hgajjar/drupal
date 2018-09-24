@@ -21,12 +21,12 @@ resources:
   requests:
     cpu: 500m
     memory: 768Mi
-probePath: /
-# livenessProbe:
-#   initialDelaySeconds: 60
-#   periodSeconds: 10
-#   successThreshold: 1
-#   timeoutSeconds: 1
+probePath: /healthz
+livenessProbe:
+  initialDelaySeconds: 60
+  periodSeconds: 10
+  successThreshold: 1
+  timeoutSeconds: 1
 readinessProbe:
   periodSeconds: 10
   successThreshold: 1
